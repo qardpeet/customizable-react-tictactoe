@@ -1,13 +1,66 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+.game {
+  display: grid;
+  grid-gap: 3px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  background: #eeeeee;
+  font-family: sans-serif;
+}
+
+.cell:hover {
+  background: aliceblue;
+}
+
+.cell.streak {
+  background-color: pink;
+}
+
+.game-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.menu-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+input {
+  margin-bottom: 8px;
+  padding: 8px;
+  width: auto;
+}
+
+button {
+  padding: 8px;
+  cursor: pointer;
+  font-family: sans-serif;
+  font-weight: 700;
+}
+
+label {
+  font-family: sans-serif;
+}
+
+p {
+  font-family: sans-serif;
+  margin: 16px 0;
 }
