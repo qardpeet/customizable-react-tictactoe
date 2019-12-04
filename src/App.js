@@ -157,6 +157,7 @@ export class App extends Component {
       bottomLeftColIndex += 1;
     }
 
+    //check for tie
     if (this.state.stepCount >= this.state.height * this.state.width) {
       this.setState({
         status: "TIE"
