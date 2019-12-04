@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import classNames from "classnames";
 
+import Menu from "./components/Menu";
+
 export class App extends Component {
   state = {
     board: [],
-    winningStreak: 3,
-    height: 4,
-    width: 5,
+    winningStreak: "3",
+    height: "3",
+    width: "3",
     stepCount: 0,
     status: "",
     menu: true,
@@ -14,6 +16,23 @@ export class App extends Component {
   };
 
   createBoard = () => {
+    if (
+      this.state.winningStreak > this.state.height &&
+      this.state.winningStreak > this.state.width
+    ) {
+      alert("Streak cannot be longer than height/width");
+      return;
+    }
+
+    if (
+      !this.state.winningStreak.length &&
+      !this.state.height.length &&
+      !this.state.width.length
+    ) {
+      alert("Please fill in all the fields");
+      return;
+    }
+
     let board = [];
 
     for (let r = 0; r < this.state.height; r++) {
@@ -61,15 +80,12 @@ export class App extends Component {
         streakCells.push([r, cIndex]);
 
         if (streakCells.length >= this.state.winningStreak) {
-          this.setState({
-            streakCells,
-            status: "WIN"
-          });
+          this.win(streakCells);
           return;
         }
-        continue;
+      } else {
+        streakCells = [];
       }
-      streakCells = [];
     }
 
     streakCells = [];
@@ -80,15 +96,65 @@ export class App extends Component {
         streakCells.push([rIndex, c]);
 
         if (streakCells.length >= this.state.winningStreak) {
-          this.setState({
-            streakCells,
-            status: "WIN"
-          });
+          this.win(streakCells);
           return;
         }
-        continue;
+      } else {
+        streakCells = [];
       }
-      streakCells = [];
+    }
+
+    streakCells = [];
+
+    //check cells diagonally top->bottom
+    let topLeftRowIndex = rIndex >= cIndex ? rIndex - cIndex : 0;
+    let topLeftColIndex = rIndex >= cIndex ? 0 : cIndex - rIndex;
+
+    for (let r = topLeftRowIndex; r < this.state.height; r++) {
+      if (topLeftColIndex >= this.state.width) break;
+
+      if (this.state.board[r][topLeftColIndex] === cell) {
+        streakCells.push([r, topLeftColIndex]);
+
+        if (streakCells.length >= this.state.winningStreak) {
+          this.win(streakCells);
+          return;
+        }
+      } else {
+        streakCells = [];
+      }
+
+      topLeftColIndex += 1;
+    }
+
+    streakCells = [];
+
+    //check cells diagonally bottom->top
+    let bottomLeftRowIndex =
+      rIndex + cIndex >= this.state.height
+        ? this.state.height - 1
+        : rIndex + cIndex;
+
+    let bottomLeftColIndex =
+      rIndex + cIndex >= this.state.height
+        ? rIndex + cIndex - (this.state.height - 1)
+        : 0;
+
+    for (let r = bottomLeftRowIndex; r >= 0; r--) {
+      if (bottomLeftColIndex >= this.state.width) break;
+
+      if (this.state.board[r][bottomLeftColIndex] === cell) {
+        streakCells.push([r, bottomLeftColIndex]);
+
+        if (streakCells.length >= this.state.winningStreak) {
+          this.win(streakCells);
+          return;
+        }
+      } else {
+        streakCells = [];
+      }
+
+      bottomLeftColIndex += 1;
     }
 
     if (this.state.stepCount >= this.state.height * this.state.width) {
@@ -98,47 +164,29 @@ export class App extends Component {
     }
   };
 
+  win = streakCells => {
+    this.setState({
+      streakCells,
+      status: "WIN"
+    });
+  };
+
   handleChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value.replace(/\D/, "")
     });
   };
 
   render() {
     if (this.state.menu) {
       return (
-        <div className="menu-wrapper">
-          <label>
-            Height:
-            <input
-              type="number"
-              name="height"
-              value={this.state.height}
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Width:
-            <input
-              type="number"
-              name="width"
-              value={this.state.width}
-              onChange={this.handleChange}
-            />
-          </label>
-          <label>
-            Winning Streak:
-            <input
-              type="number"
-              name="winningStreak"
-              value={this.state.winningStreak}
-              onChange={this.handleChange}
-            />
-          </label>
-          <button className="btn" onClick={this.createBoard}>
-            PLAY
-          </button>
-        </div>
+        <Menu
+          height={this.state.height}
+          width={this.state.width}
+          winningStreak={this.state.winningStreak}
+          handleChange={this.handleChange}
+          createBoard={this.createBoard}
+        />
       );
     }
 
