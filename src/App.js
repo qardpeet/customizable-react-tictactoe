@@ -16,19 +16,16 @@ export class App extends Component {
   };
 
   createBoard = () => {
-    if (
-      this.state.winningStreak > this.state.height &&
-      this.state.winningStreak > this.state.width
-    ) {
+    const height = parseInt(this.state.height);
+    const width = parseInt(this.state.width);
+    const winningStreak = parseInt(this.state.winningStreak);
+
+    if (winningStreak > height && winningStreak > width) {
       alert("Streak cannot be longer than height/width");
       return;
     }
 
-    if (
-      !this.state.winningStreak.length &&
-      !this.state.height.length &&
-      !this.state.width.length
-    ) {
+    if (isNaN(height) || isNaN(width) || isNaN(winningStreak)) {
       alert("Please fill in all the fields");
       return;
     }
