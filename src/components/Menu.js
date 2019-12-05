@@ -7,6 +7,7 @@ function Menu({ height, width, winningStreak, handleChange, createBoard }) {
         Height:
         <input
           type="text"
+          className="menu-input"
           name="height"
           value={height}
           onChange={handleChange}
@@ -14,12 +15,19 @@ function Menu({ height, width, winningStreak, handleChange, createBoard }) {
       </label>
       <label>
         Width:
-        <input type="text" name="width" value={width} onChange={handleChange} />
+        <input
+          type="text"
+          className="menu-input"
+          name="width"
+          value={width}
+          onChange={handleChange}
+        />
       </label>
       <label>
         Winning Streak:
         <input
           type="text"
+          className="menu-input"
           name="winningStreak"
           value={winningStreak}
           onChange={handleChange}

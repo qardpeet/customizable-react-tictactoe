@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import classNames from "classnames";
 
 import Menu from "./components/Menu";
+import Game from "./components/Game";
 
 export class App extends Component {
   state = {
@@ -30,11 +30,11 @@ export class App extends Component {
       return;
     }
 
-    let board = [];
+    const board = [];
 
-    for (let r = 0; r < this.state.height; r++) {
+    for (let r = 0; r < height; r++) {
       board.push([]);
-      for (let c = 0; c < this.state.width; c++) {
+      for (let c = 0; c < width; c++) {
         board[r].push("");
       }
     }
@@ -49,14 +49,18 @@ export class App extends Component {
   };
 
   handleCellClick = (rIndex, cIndex) => {
+    const board = this.state.board;
+    const stepCount = this.state.stepCount;
+    const status = this.state.status;
     const cell = this.state.board[rIndex][cIndex];
 
-    if (this.state.status !== "PLAYING") return;
+    if (status !== "PLAYING") return;
 
     if (cell !== "") return;
 
-    const newBoard = this.state.board.map(row => [...row]);
-    newBoard[rIndex][cIndex] = this.state.stepCount % 2 === 0 ? "X" : "O";
+    //making sure we do not mutate the state
+    const newBoard = board.map(row => [...row]);
+    newBoard[rIndex][cIndex] = stepCount % 2 ? "O" : "X";
 
     this.setState(
       state => ({
@@ -68,15 +72,21 @@ export class App extends Component {
   };
 
   checkStatus = (rIndex, cIndex) => {
-    const cell = this.state.board[rIndex][cIndex];
+    const board = this.state.board;
+    const cell = board[rIndex][cIndex];
+    const height = parseInt(this.state.height);
+    const width = parseInt(this.state.width);
+    const winningStreak = parseInt(this.state.winningStreak);
+    const stepCount = this.state.stepCount;
+
     let streakCells = [];
 
     //check cells vertically
-    for (let r = 0; r < this.state.height; r++) {
-      if (this.state.board[r][cIndex] === cell) {
+    for (let r = 0; r < height; r++) {
+      if (board[r][cIndex] === cell) {
         streakCells.push([r, cIndex]);
 
-        if (streakCells.length >= this.state.winningStreak) {
+        if (streakCells.length >= winningStreak) {
           this.win(streakCells);
           return;
         }
@@ -84,15 +94,14 @@ export class App extends Component {
         streakCells = [];
       }
     }
-
     streakCells = [];
 
     //check cells horizontally
-    for (let c = 0; c < this.state.width; c++) {
-      if (this.state.board[rIndex][c] === cell) {
+    for (let c = 0; c < width; c++) {
+      if (board[rIndex][c] === cell) {
         streakCells.push([rIndex, c]);
 
-        if (streakCells.length >= this.state.winningStreak) {
+        if (streakCells.length >= winningStreak) {
           this.win(streakCells);
           return;
         }
@@ -100,20 +109,19 @@ export class App extends Component {
         streakCells = [];
       }
     }
-
     streakCells = [];
 
     //check cells diagonally top->bottom
     let topLeftRowIndex = rIndex >= cIndex ? rIndex - cIndex : 0;
     let topLeftColIndex = rIndex >= cIndex ? 0 : cIndex - rIndex;
 
-    for (let r = topLeftRowIndex; r < this.state.height; r++) {
-      if (topLeftColIndex >= this.state.width) break;
+    for (let r = topLeftRowIndex; r < height; r++) {
+      if (topLeftColIndex >= width) break;
 
-      if (this.state.board[r][topLeftColIndex] === cell) {
+      if (board[r][topLeftColIndex] === cell) {
         streakCells.push([r, topLeftColIndex]);
 
-        if (streakCells.length >= this.state.winningStreak) {
+        if (streakCells.length >= winningStreak) {
           this.win(streakCells);
           return;
         }
@@ -123,27 +131,22 @@ export class App extends Component {
 
       topLeftColIndex += 1;
     }
-
     streakCells = [];
 
     //check cells diagonally bottom->top
     let bottomLeftRowIndex =
-      rIndex + cIndex >= this.state.height
-        ? this.state.height - 1
-        : rIndex + cIndex;
+      rIndex + cIndex >= height ? height - 1 : rIndex + cIndex;
 
     let bottomLeftColIndex =
-      rIndex + cIndex >= this.state.height
-        ? rIndex + cIndex - (this.state.height - 1)
-        : 0;
+      rIndex + cIndex >= height ? rIndex + cIndex - (height - 1) : 0;
 
     for (let r = bottomLeftRowIndex; r >= 0; r--) {
-      if (bottomLeftColIndex >= this.state.width) break;
+      if (bottomLeftColIndex >= width) break;
 
-      if (this.state.board[r][bottomLeftColIndex] === cell) {
+      if (board[r][bottomLeftColIndex] === cell) {
         streakCells.push([r, bottomLeftColIndex]);
 
-        if (streakCells.length >= this.state.winningStreak) {
+        if (streakCells.length >= winningStreak) {
           this.win(streakCells);
           return;
         }
@@ -155,7 +158,7 @@ export class App extends Component {
     }
 
     //check for tie
-    if (this.state.stepCount >= this.state.height * this.state.width) {
+    if (stepCount >= height * width) {
       this.setState({
         status: "TIE"
       });
@@ -169,6 +172,12 @@ export class App extends Component {
     });
   };
 
+  toggleMenu = () => {
+    this.setState(state => ({
+      menu: !state.menu
+    }));
+  };
+
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value.replace(/\D/, "")
@@ -176,12 +185,20 @@ export class App extends Component {
   };
 
   render() {
+    const board = this.state.board;
+    const height = this.state.height;
+    const width = this.state.width;
+    const winningStreak = this.state.winningStreak;
+    const streakCells = this.state.streakCells;
+    const status = this.state.status;
+    const stepCount = this.state.stepCount;
+
     if (this.state.menu) {
       return (
         <Menu
-          height={this.state.height}
-          width={this.state.width}
-          winningStreak={this.state.winningStreak}
+          height={height}
+          width={width}
+          winningStreak={winningStreak}
           handleChange={this.handleChange}
           createBoard={this.createBoard}
         />
@@ -189,43 +206,16 @@ export class App extends Component {
     }
 
     return (
-      <div className="game-wrapper">
-        <div
-          className="game"
-          style={{
-            gridTemplateColumns: `repeat(${this.state.width}, 50px)`,
-            gridTemplateRows: `repeat(${this.state.height}, 50px)`
-          }}
-        >
-          {this.state.board.map((row, rIndex) =>
-            row.map((cell, cIndex) => (
-              <div
-                className={classNames("cell", {
-                  streak: this.state.streakCells.some(
-                    element => element[0] === rIndex && element[1] === cIndex
-                  )
-                })}
-                key={rIndex + cIndex}
-                onClick={() => this.handleCellClick(rIndex, cIndex)}
-              >
-                {cell}
-              </div>
-            ))
-          )}
-        </div>
-
-        {this.state.status === "WIN" && (
-          <p>{this.state.stepCount % 2 === 0 ? "O" : "X"} Wins!</p>
-        )}
-
-        {this.state.status === "TIE" && <p>TIE</p>}
-
-        {this.state.status !== "PLAYING" && (
-          <button className="btn" onClick={() => this.setState({ menu: true })}>
-            New Game
-          </button>
-        )}
-      </div>
+      <Game
+        board={board}
+        width={width}
+        height={height}
+        streakCells={streakCells}
+        status={status}
+        stepCount={stepCount}
+        handleCellClick={this.handleCellClick}
+        toggleMenu={this.toggleMenu}
+      />
     );
   }
 }

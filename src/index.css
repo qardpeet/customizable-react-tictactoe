@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  font-family: sans-serif;
   margin: 0;
   padding: 0;
 }
@@ -16,7 +17,6 @@
   cursor: pointer;
   font-size: 20px;
   background: #eeeeee;
-  font-family: sans-serif;
 }
 
 .cell:hover {
@@ -43,24 +43,18 @@
   flex-direction: column;
 }
 
-input {
+.menu-input {
   margin-bottom: 8px;
   padding: 8px;
   width: auto;
 }
 
-button {
+.btn {
   padding: 8px;
   cursor: pointer;
-  font-family: sans-serif;
   font-weight: 700;
 }
 
-label {
-  font-family: sans-serif;
-}
-
-p {
-  font-family: sans-serif;
+.status-text {
   margin: 16px 0;
 }
