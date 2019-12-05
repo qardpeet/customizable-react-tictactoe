@@ -1,0 +1,2 @@
+*{box-sizing:border-box;font-family:sans-serif;margin:0;padding:0}.game{display:grid;grid-gap:3px}.cell{display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;background:#eee}.cell:hover{background:#f0f8ff}.cell.streak{background-color:pink}.game-wrapper,.menu-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column}.menu-input{margin-bottom:8px;padding:8px;width:auto}.btn{padding:8px;cursor:pointer;font-weight:700}.status-text{margin:16px 0}
+/*# sourceMappingURL=main.d93dce1a.chunk.css.map */
