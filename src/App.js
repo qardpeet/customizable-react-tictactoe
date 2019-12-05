@@ -111,9 +111,9 @@ export class App extends Component {
     }
     streakCells = [];
 
-    //check cells diagonally top->bottom
-    let topLeftRowIndex = rIndex >= cIndex ? rIndex - cIndex : 0;
-    let topLeftColIndex = rIndex >= cIndex ? 0 : cIndex - rIndex;
+    //check cells diagonally top left -> bottom right
+    let topLeftRowIndex = rIndex - cIndex >= 0 ? rIndex - cIndex : 0;
+    let topLeftColIndex = rIndex - cIndex >= 0 ? 0 : cIndex - rIndex;
 
     for (let r = topLeftRowIndex; r < height; r++) {
       if (topLeftColIndex >= width) break;
@@ -129,16 +129,15 @@ export class App extends Component {
         streakCells = [];
       }
 
-      topLeftColIndex += 1;
+      topLeftColIndex++;
     }
     streakCells = [];
 
-    //check cells diagonally bottom->top
+    //check cells diagonally bottom left -> top right
     let bottomLeftRowIndex =
-      rIndex + cIndex >= height ? height - 1 : rIndex + cIndex;
-
+      rIndex + cIndex - height >= 0 ? height - 1 : rIndex + cIndex;
     let bottomLeftColIndex =
-      rIndex + cIndex >= height ? rIndex + cIndex - (height - 1) : 0;
+      rIndex + cIndex - height >= 0 ? rIndex - (height - 1) + cIndex : 0;
 
     for (let r = bottomLeftRowIndex; r >= 0; r--) {
       if (bottomLeftColIndex >= width) break;
@@ -154,7 +153,7 @@ export class App extends Component {
         streakCells = [];
       }
 
-      bottomLeftColIndex += 1;
+      bottomLeftColIndex++;
     }
 
     //check for tie
